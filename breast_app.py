@@ -3,21 +3,9 @@ import streamlit as st
 from PIL import Image
 import pandas as pd
 from sklearn.metrics import accuracy_score
-from breastcancer import preprocess_data  # Pastikan fungsi ini ada di breastcancer.py
 
 # Load the model
 model = pickle.load(open('breastcancer.sav', 'rb'))
-
-# Load the test dataset (assuming it's already processed and saved as preprocessed_data.csv)
-preprocessed_data_df = pd.read_csv('processed_data.csv')
-
-# Assuming the last column is the target variable
-X_test_processed = preprocessed_data_df.iloc[:, :-1]
-y_test = preprocessed_data_df.iloc[:, -1]
-
-# Calculate the accuracy on the preprocessed test dataset
-y_pred = model.predict(X_test_processed)
-accuracy = accuracy_score(y_test, y_pred)
 
 # Set page config
 st.set_page_config(
@@ -45,7 +33,7 @@ st.markdown(
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Prediction", "Pre-processed Data Results"])
+page = st.sidebar.radio("Go to", ["Prediction"])
 
 # Prediction Page
 if page == "Prediction":
@@ -85,10 +73,7 @@ if page == "Prediction":
             bland_chromatin, normal_nucleoli, mitoses
         )
         
-        # Pre-process the input data
-        preprocessed_input = preprocess_data(input_data)
-        
-        prediction = model.predict([preprocessed_input])
+        prediction = model.predict([input_data])
 
         st.markdown(
             """
@@ -101,49 +86,11 @@ if page == "Prediction":
         else:
             st.error('Kanker Anda Termasuk Kanker **Malignant (Ganas)**.')
 
-        # Display the model accuracy
+        # Footer
         st.markdown(
             """
-            ### Model Accuracy:
-            """
+            <hr>
+            <p style="text-align:center;">Kelompok 1 - 21S1SI-Machine2(SI163) </p>
+            """,
+            unsafe_allow_html=True
         )
-        st.write(f"The model accuracy on the test dataset is {accuracy:.2f}")
-
-    # Footer
-    st.markdown(
-        """
-        <hr>
-        <p style="text-align:center;">Kelompok 1 - 21S1SI-Machine2(SI163) </p>
-        """,
-        unsafe_allow_html=True
-    )
-
-# Pre-processed Data Results Page
-elif page == "Pre-processed Data Results":
-    st.title('Pre-processed Data Results')
-
-    st.markdown(
-        """
-        ### Here you can check the results of the pre-processed data.
-        """
-    )
-
-    # Display the pre-processed data
-    st.dataframe(preprocessed_data_df)
-
-    # Display the model accuracy on this pre-processed data
-    st.markdown(
-        """
-        ### Model Accuracy on Pre-processed Data:
-        """
-    )
-    st.write(f"The model accuracy on the pre-processed test dataset is {accuracy:.2f}")
-
-    # Footer
-    st.markdown(
-        """
-        <hr>
-        <p style="text-align:center;">Kelompok 1 - 21S1SI-Machine2(SI163) </p>
-        """,
-        unsafe_allow_html=True
-    )
