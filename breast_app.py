@@ -8,17 +8,14 @@ from breastcancer import preprocess_data  # Pastikan fungsi ini ada di breastcan
 # Load the model
 model = pickle.load(open('breastcancer.sav', 'rb'))
 
-# Load the test dataset
-test_data = pd.read_csv('X_test.csv')  # Pastikan file ini tersedia di direktori yang sama
+# Load the test dataset (assuming it's already processed and saved as preprocessed_data.csv)
+preprocessed_data_df = pd.read_csv('processed_data.csv')
 
 # Assuming the last column is the target variable
-X_test = test_data.iloc[:, :-1]
-y_test = test_data.iloc[:, -1]
+X_test_processed = preprocessed_data_df.iloc[:, :-1]
+y_test = preprocessed_data_df.iloc[:, -1]
 
-# Preprocess the test data
-X_test_processed = X_test.apply(preprocess_data, axis=1)
-
-# Calculate the accuracy on the test dataset
+# Calculate the accuracy on the preprocessed test dataset
 y_pred = model.predict(X_test_processed)
 accuracy = accuracy_score(y_test, y_pred)
 
@@ -89,9 +86,9 @@ if page == "Prediction":
         )
         
         # Pre-process the input data
-        preprocessed_data = preprocess_data(input_data)
+        preprocessed_input = preprocess_data(input_data)
         
-        prediction = model.predict([preprocessed_data])
+        prediction = model.predict([preprocessed_input])
 
         st.markdown(
             """
@@ -131,11 +128,16 @@ elif page == "Pre-processed Data Results":
         """
     )
 
-    # Load the pre-processed dataset
-    preprocessed_data_df = pd.read_csv('preprocessed_data.csv')  # Pastikan file ini tersedia di direktori yang sama
-
     # Display the pre-processed data
     st.dataframe(preprocessed_data_df)
+
+    # Display the model accuracy on this pre-processed data
+    st.markdown(
+        """
+        ### Model Accuracy on Pre-processed Data:
+        """
+    )
+    st.write(f"The model accuracy on the pre-processed test dataset is {accuracy:.2f}")
 
     # Footer
     st.markdown(
