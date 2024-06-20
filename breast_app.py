@@ -38,7 +38,7 @@ page = st.sidebar.radio("Go to", ["Prediction"])
 # Prediction Page
 if page == "Prediction":
     # Load and display an image
-    image = Image.open("breast_cancer_image.png")  # Pastikan file gambar tersedia di direktori yang sama atau berikan path yang benar
+    image = Image.open("breast_cancer_image.jpg")  # Pastikan file gambar tersedia di direktori yang sama atau berikan path yang benar
     st.image(image, use_column_width=True)
 
     st.title('Breast Cancer Prediction')
